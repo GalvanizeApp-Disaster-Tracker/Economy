@@ -24,12 +24,16 @@ class App extends Component {
   return (
     <div className="App">
       <header className="App-header">
+      <h2> Global Economic Disasters! </h2>
+      <h3> USADebtClock </h3>
+      <iframe src="http://www.USADebtClock.com/us-debt-clock-widget.php" height="80" width="350" scrolling="no" frameborder="0">
+      </iframe>
         <img src={logo} className="App-logo" alt="logo" />
         <div className="App-Intro">
-            <h2>Zips</h2>
+            <h2>Global Growth Projections</h2>
             {zip.map(economic =>
                 <div key={economic.id}>
-                    {economic.zip}
+                    {economic.country} {economic.percchange2018}{economic.percchange2019}{economic.percchange2020}{economic.percchange2021}
                 </div>
             )}
         </div>
