@@ -19,5 +19,9 @@ public class EconomicController {
         return this.repository.findAll();
     }
     @PostMapping("/zip")
-    public Economic create(@RequestBody Economic economic){ return this.repository.save(economic); }
+    public Boolean create(@RequestBody Economic[] economic)
+    { for (Economic e : economic){
+        this.repository.save(e);
+    }
+        return true; }
 }
