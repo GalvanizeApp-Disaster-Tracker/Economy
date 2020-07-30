@@ -1,0 +1,81 @@
+
+      <div class="map-container" style="overflow: hidden; position: relative; width: 100%; height: 296.13px;">
+        <canvas width="540" height="296" style="position: absolute; transform-origin: 0px 0px; transform: scale3d(1, 1, 1) translate(0px, 0px);"></canvas>
+        <div class="pan-button left" data-pan="left"></div>
+        <div class="pan-button right" data-pan="right"></div>
+        <div class="pan-button top" data-pan="top"></div>
+        <div class="pan-button bottom" data-pan="bottom"></div>
+      </div>
+      <mw-map indicator="NGDP_RPCH" area="WEOWORLD" mode="color" year="2020">
+        <div class="map"><div style="position: absolute; top: 0px; width: 100%; height: 100%; display: none;">
+        </div>
+          <div class="map-wrapper has-touch touch-disabled map-zoom-1" style="position: relative; width: 100%; height: 100%;">
+            <div class="map-container" style="overflow: hidden; position: relative; width: 100%; height: 371.808px;">
+              <canvas width="678" height="372" style="position: absolute; transform-origin: 0px 0px; transform: scale3d(1, 1, 1) translate(0px, 0px);">
+              </canvas>
+              <div class="pan-button left" data-pan="left">
+              </div>
+              <div class="pan-button right" data-pan="right">
+              </div>
+              <div class="pan-button top" data-pan="top">
+              </div>
+              <div class="pan-button bottom" data-pan="bottom">
+              </div>
+            </div>
+            <div class="zoom-slider slider slider-vertical" data-frequency="0" data-min="1" data-max="10" data-value="1" style="top: 0px;">
+              <div class="slider-button zoom-out slider-button-disabled">
+              </div>
+              <div class="slider-button zoom-in">
+              </div>
+              <div class="slider-labels">
+              </div>
+              <div class="slider-handle" data-handle="" style="position: absolute; cursor: pointer;">
+              </div>
+            </div>
+            <div class="map-legend" style="top: 0px;">
+              <div class="map-legend-item">
+                <div class="map-legend-swatch" style="background-color: #0f724d">
+                </div>
+              6% or more
+              </div>
+              <div class="map-legend-item">
+                <div class="map-legend-swatch" style="background-color: #1c9352">
+                </div>
+              3% - 6%
+              </div>
+              <div class="map-legend-item">
+                <div class="map-legend-swatch" style="background-color: #7eb25b">
+                </div>
+              0 - 3%
+              </div>
+              <div class="map-legend-item">
+                <div class="map-legend-swatch" style="background-color: #df940f">
+                </div>
+              -3% - 0
+              </div>
+              <div class="map-legend-item">
+                <div class="map-legend-swatch" style="background-color: #b13434">
+                </div>
+              less than -3%
+              </div>
+              <div class="map-legend-item">
+                <div class="map-legend-swatch" style="background-color: #d5d7da">
+                </div>
+              no data
+              </div>
+            </div>
+            <div class="map-highlight-layer" style="position: absolute; top: 0px; left: 0px;">
+              <div class="map-hidden-tooltip map-tooltip" style="position: absolute; pointer-events: none; left: 479px; top: 67px;">
+                <div class="map-tooltip-anchor"></div>
+                <div class="map-tooltip-tip"></div>
+                <div class="label">Russian Federation</div>
+                <div class="value">-5.5</div>
+              </div>
+            </div>
+            <div class="map-circle-layer" style="position: absolute; top: 0px; left: 0px; display: none;">
+              <canvas width="678" height="372" style="position: absolute; pointer-events: none;">
+              </canvas>
+            </div>
+          </div>
+        </div>
+      </mw-map>
