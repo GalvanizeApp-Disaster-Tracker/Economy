@@ -10,9 +10,11 @@ import { VectorMap } from "react-jvectormap";
 import './App.css';
 import './vectormap.css';
 
+
+//hard coded the map data.  Not sure the best way to import hashMap JSON data. 
 const { getCode, getName, getData } = require("country-list");
 const mapData =     {
-    AF: -3, AL: -5,    DE: -5.2,    AO: -1.4,    AR: -5.7,    AM: -1.5,    AU: -6.7,    AT: -7,    AZ: -2.2,    BS: -8.3,
+    AF: -3, AL: -5,  AO: -1.4,    AR: -5.7,    AM: -1.5,    AU: -6.7,    AT: -7,    AZ: -2.2,    BS: -8.3,
     BE: -6.9,    BZ: -12,   BJ: 4.5,    BT: 2.7,    BO: -2.9,    BA: -5,    BW: -5.4,    BR: -5.3,
     BN: 1.3,    BG: -4,    BF: 2,    BI: -5.5,    KH: -1.6,    CM: -1.2,    CA: -6.2,    CF: 1,
     TD: -0.2,    CL: -4.5,    CN: 1.2,    CO: -2.4,    CG: -2.3,    CR: -3.3,    HR: -9,    CY: -6.5,
@@ -33,7 +35,7 @@ const mapData =     {
     TR: -5,    TM: 1.8,    UG: 3.5,    UA: -7.7,    AE: -3.5,    GB: -6.5,    US: -5.9,    UY: -3,
     UZ: 1.8,    VU: -3.3,    VE: -15,    VN: 2.7,    YE: -3,    ZM: -3.5,    ZW: -7.4
 };
-const config = {
+const config = { //confetti Cannon config
   angle: 90,
   spread: 360,
   startVelocity: 40,
@@ -46,7 +48,7 @@ const config = {
   perspective: "500px",
   colors: ["#a864fd", "#29cdff", "#78ff44", "#ff718d", "#fdff6a"]
 };
-const handleClick = (e, countryCode) => {
+const handleClick = (e, countryCode) => {  //I think this converts contry code into the country name? 
   console.log(countryCode);
   return true;
 };
@@ -71,12 +73,12 @@ class App extends Component {
     this.checkSwitch = this.checkSwitch.bind(this);
   }
 
-  checkSwitch = ({ currentTarget }) => {
+  checkSwitch = ({ currentTarget }) => {  //Use for dynamically mounting data using dropdown
     //console.log("In the case statement")
     if (currentTarget === undefined) {
       return true;
     }
-    else {
+    else { // closes everything but the active drop down choice
       switch (currentTarget.id) {
         case '1':
           this.setState({ GDPRender: true })
@@ -105,8 +107,8 @@ class App extends Component {
     }
   }
 
-  GDPRender() {
-    console.log("Attempting to render GDP table")
+  GDPRender() {  //Raw table data with statistics 
+    //console.log("Attempting to render GDP table")
     return (
       <div>
         <Row>
@@ -145,7 +147,7 @@ class App extends Component {
       </div>
     );
   }
-  BankruptcyRender() {
+  BankruptcyRender() { //Raw table data with statistics 
     //console.log("Attempting to render Bankruptcy table")
     return (
       <div>
@@ -184,7 +186,7 @@ class App extends Component {
 //<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jvectormap/2.0.4/jquery-jvectormap.css" type="text/css" media="screen"/>
 // Created a local CSS using the above style sheet as reference. 
 
-  GDPMapRender() {
+  GDPMapRender() { /// Cool Map render -- Not sure if it useful on a large scale.  Bulky implmenentation
     //console.log("Attempting to render GDP Map table")
     return (
       
@@ -229,9 +231,9 @@ class App extends Component {
             {
               values: mapData, //this is your data
               scale: ["#F01717", "#17F031"], //your color game's here
-              min: -10,
-              max: 5,
-              normalizeFunction: "linial",
+              min: -8, //Bottom color   If this is set too low everything comes back brown--too high everything is black
+              max: 5, //Top Color   Opposite problem with this one 
+              normalizeFunction: "linial",  //options are polymonial & linial. Poly does not deal with negative numbers  
 
             }
           ]
@@ -278,15 +280,21 @@ class App extends Component {
             <Row>
               <Col>
                 <Row>
-                  <Col><h2>US Debt Clock</h2></Col>
-                  <Col width="auto"><h2>Your Contribution</h2></Col>
+                  <Col><h2>Current US Debt</h2></Col>
+                  <Col xs="auto">
+                    <Alert id="tooltip1" width="300px" color="danger"><iframe title="USDebtClock" src="http://www.USADebtClock.com/us-debt-clock-widget.php" height="40" width="325px" scrolling="no" frameBorder="0" /></Alert>
+                  </Col>
                 </Row>
                 <Row>
+                  <Col xs="auto"><h3>U.S. Debt per Citizen</h3></Col>
                   <Col>
-                    <Alert id="tooltip1" width="330" color="danger"><iframe title="USDebtClock" src="http://www.USADebtClock.com/us-debt-clock-widget.php" height="50" width="330" scrolling="no" frameBorder="0" /></Alert>
+                    <Alert color="danger" id="tooltip2" xs="auto"> $80,500 </Alert>
                   </Col>
+                </Row>
+                <Row>
+                  <Col xs="auto"><h3>US Federal Debt to GDP Ratio</h3></Col>
                   <Col>
-                    <Alert color="danger" id="tooltip2" width="auto"> $80,500 </Alert>
+                    <Alert color="danger" id="tooltip2" xs="auto"> 132.63% </Alert>
                   </Col>
                 </Row>
                 <UncontrolledTooltip placement="right" target="tooltip1">Based on information from the U.S. Department of the Treasury</UncontrolledTooltip>
@@ -305,14 +313,14 @@ class App extends Component {
               <Col>
                 <Timeline
                   dataSource={{ sourceType: 'profile', screenName: 'USTreasury' }}
-                  options={{ height: '400' }}
+                  options={{ height: '360' }}
                 />
               </Col>
             </Row>
 
             <Dropdown isOpen={this.state.setDropdownOpen} toggle={this.toggle}>
               <DropdownToggle caret>
-                Raw Data Charts
+                Economic Data Charts
                 </DropdownToggle>
               <DropdownMenu right>
                 <DropdownItem id="1" onClick={this.checkSwitch}>Global GDP Projections</DropdownItem>
