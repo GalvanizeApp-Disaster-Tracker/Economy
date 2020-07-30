@@ -1,7 +1,7 @@
-import React, { Component } from 'react';
+import React, { Component, useEffect, useState } from 'react';
 import { Timeline } from 'react-twitter-widgets';
 import {
-  Container, Row, Col, Table, Alert, UncontrolledTooltip, Card, CardText, Dropdown, DropdownToggle, DropdownMenu, DropdownItem
+  Container, Row, Col, Table, Alert, UncontrolledTooltip, Card, CardText, Dropdown, DropdownToggle, DropdownMenu, DropdownItem, Badge, Button
 } from 'reactstrap';
 import Confetti from 'react-dom-confetti';
 import { VectorMap } from "react-jvectormap";
@@ -9,7 +9,6 @@ import { VectorMap } from "react-jvectormap";
 // CardImg, CardBody, CardLink, CardTitle, CardSubtitle,
 import './App.css';
 import './vectormap.css';
-
 
 //hard coded the map data.  Not sure the best way to import hashMap JSON data. 
 const { getCode, getName, getData } = require("country-list");
@@ -50,7 +49,7 @@ const config = { //confetti Cannon config
 };
 const handleClick = (e, countryCode) => {  //I think this converts contry code into the country name? 
   console.log(countryCode);
-  return true;
+  //this.setState({ fireCannon: true })
 };
 
 class App extends Component {
@@ -64,7 +63,8 @@ class App extends Component {
       setDropdownOpen: false,
       GDPMapRender: true,
       BankruptcyRender: false,
-      GDPRender: false
+      GDPRender: false,
+      fireCannon: false
     };
     this.toggle = this.toggle.bind(this);
     this.GDPRender = this.GDPRender.bind(this);
@@ -76,7 +76,6 @@ class App extends Component {
   checkSwitch = ({ currentTarget }) => {  //Use for dynamically mounting data using dropdown
     //console.log("In the case statement")
     if (currentTarget === undefined) {
-      return true;
     }
     else { // closes everything but the active drop down choice
       switch (currentTarget.id) {
@@ -261,6 +260,10 @@ class App extends Component {
     this.setState({ setDropdownOpen: !this.state.setDropdownOpen });
   } //reverses the current state of the drop down menu.  Can be used for any ON/OFF toggling need. 
 
+
+
+
+  
   render() {
     const { isLoading } = this.state;
     if (isLoading) {
@@ -271,7 +274,7 @@ class App extends Component {
       <div className="Bg">
         <header className="App-header">
           <Container>
-          <Confetti active={ handleClick } config={ config }/>
+          <Confetti active={ this.fireCannon } config={ config }/>
             <br />
             <Row>
               <Col><h1> Global Economic Disasters!!!!! </h1></Col>
@@ -280,24 +283,24 @@ class App extends Component {
             <Row>
               <Col>
                 <Row>
-                  <Col><h2>Current US Debt</h2></Col>
-                  <Col xs="auto">
-                    <Alert id="tooltip1" width="300px" color="danger"><iframe title="USDebtClock" src="http://www.USADebtClock.com/us-debt-clock-widget.php" height="40" width="325px" scrolling="no" frameBorder="0" /></Alert>
+                  <Col><h2><Button color="secondary">Current US Debt</Button></h2></Col>
+                  <Col xs="9">
+                    <Alert id="debt-clock" color="danger"><h2><DebtClock /></h2></Alert>
                   </Col>
                 </Row>
                 <Row>
-                  <Col xs="auto"><h3>U.S. Debt per Citizen</h3></Col>
+                  <Col xs="auto"><h3><Button color="secondary">U.S. Debt per Citizen</Button></h3></Col>
                   <Col>
-                    <Alert color="danger" id="tooltip2" xs="auto"> $80,500 </Alert>
+                    <Alert color="danger" id="tooltip2" xs="1"><h2>$80,500</h2></Alert>
                   </Col>
                 </Row>
                 <Row>
-                  <Col xs="auto"><h3>US Federal Debt to GDP Ratio</h3></Col>
+                  <Col xs="auto"><h3><Button color="secondary">US Federal Debt to GDP Ratio</Button></h3></Col>
                   <Col>
-                    <Alert color="danger" id="tooltip2" xs="auto"> 132.63% </Alert>
+                    <Alert color="danger" id="tooltip2" xs="auto"><h3>132.63%</h3></Alert>
                   </Col>
                 </Row>
-                <UncontrolledTooltip placement="right" target="tooltip1">Based on information from the U.S. Department of the Treasury</UncontrolledTooltip>
+                <UncontrolledTooltip placement="right" target="debt-clock">Based on information from the U.S. Department of the Treasury</UncontrolledTooltip>
 
                 <UncontrolledTooltip placement="right" target="tooltip2">Number determined by dividing the number of US persons by the total US debt</UncontrolledTooltip>
                 <Row>
@@ -313,7 +316,7 @@ class App extends Component {
               <Col>
                 <Timeline
                   dataSource={{ sourceType: 'profile', screenName: 'USTreasury' }}
-                  options={{ height: '360' }}
+                  options={{ height: '400', theme:'dark' }}
                 />
               </Col>
             </Row>
@@ -337,4 +340,74 @@ class App extends Component {
     );
   }
 }
+Number.prototype.formatMoney = function (c, d, t) {
+  var n = this, c = isNaN(c = Math.abs(c)) ? 2 : c, d = d == undefined ? "," : d, t = t == undefined ? "." : t, s = n < 0 ? "-" : "", i = parseInt(n = Math.abs(+n || 0).toFixed(c)) + "", j = (j = i.length) > 3 ? j % 3 : 0;
+  return s + (j ? i.substr(0, j) + t : "") + i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + t) + (c ? d + Math.abs(n - i).toFixed(c).slice(2) : "");
+};
+function calculateDebt(startYear, startMonth, startDay, baseDebt, perSecondDebt, yearPop, monthPop, dayPop, basePop, perSecondPop) {
+  //We pass start date (year, month, day), the base value, with the increase per second
+  // then we figure the difference between days and multiply and add the base:
+  // startYear = 2020
+  // startMonth = 07
+  // startDay = 14
+  // baseDebt = 26488101200376.64,41693.92,2011,06,06,311496761,0.076923076923077
+  var one_day_m = 1000 * 60 * 60 * 24;  //Get 1 day in milliseconds
+  var one_day = 60 * 60 * 24;  //Get 1 day in seconds
+  var one_sec = 1000;  // 1 second in milliseconds
+  var one_tenthsec = 100;  // 1 10th second in milliseconds
+  var one_fifthsec = 200;  // 1 5th second in milliseconds
+  var one_halfsec = 500;  // 0.5 second in milliseconds
+  //theTime=setTimeout('calculateDebt(2011,5,30,10000000,41234)',one_tenthsec);
+  let theTime = setTimeout('calculateDebt(2020,07,14,26488101200376.64,41693.92,2011,06,06,311496761,0.076923076923077)', one_tenthsec);
+  //The Date we are starting from in Javascript format based on parameters passed
+  var startdate = new Date(startYear, startMonth - 1, startDay); //  Year/Month/Day - Month is 0-11 in JavaScript
+  var startPopdate = new Date(yearPop, monthPop - 1, dayPop); //  Year/Month/Day - Month is 0-11 in JavaScript
+  let currentUnfundedDebt = 1.14039E+14;
+  let currentUnfundedDebtPerTenth = (155553.99) / 10;
+  let currentUnfundedSSDebt = 15100000000000.00;
+  let currentUnfundedSSDebtPerTenth = (38333.21) / 10;
+  let currentUnfundedMediCareDebt = 79000000000000.00;
+  let currentUnfundedMediCareDebtPerTenth = (98764.67) / 10;
+  let currentUnfundedDrugDebt = 19939000000000.00;
+  let currentUnfundedDrugDebtPerTenth = (18456.11) / 10;
+  let currentUnfundedObamaCareDebt = 9200000000000.00;
+  let currentUnfundedObamaCareDebtPerTenth = (7123.21) / 10;
+  let currentUnfundedOtherDebt = 0.00;
+  let currentUnfundedDebtOtherPerTenth = (0) / 10;
+  let perTenthDebt = perSecondDebt / 10;
+  let today = new Date();
+  let elapsedSeconds = Math.ceil((today.getTime() - startdate.getTime()) / 1000);  //Seconds since start
+  let elapsedTenths = Math.ceil((today.getTime() - startdate.getTime()) / 100);  //10ths of a second since start
+  //currentDebt=Math.ceil((elapsedTenths*perTenthDebt)+baseDebt);
+  let currentDebt = (elapsedTenths * perTenthDebt) + baseDebt;
+  //currentUnfundedDebt = currentUnfundedDebt + (elapsedTenths*currentUnfundedDebtPerTenth);
+  currentUnfundedSSDebt = currentUnfundedSSDebt + (elapsedTenths * currentUnfundedSSDebtPerTenth);
+  currentUnfundedMediCareDebt = currentUnfundedMediCareDebt + (elapsedTenths * currentUnfundedMediCareDebtPerTenth);
+  currentUnfundedDrugDebt = currentUnfundedDrugDebt + (elapsedTenths * currentUnfundedDrugDebtPerTenth);
+  currentUnfundedObamaCareDebt = currentUnfundedObamaCareDebt + (elapsedTenths * currentUnfundedObamaCareDebtPerTenth);
+  currentUnfundedOtherDebt = currentUnfundedOtherDebt + (elapsedTenths * currentUnfundedDebtOtherPerTenth);
+  currentUnfundedDebt = currentUnfundedSSDebt + currentUnfundedMediCareDebt + currentUnfundedDrugDebt + currentUnfundedObamaCareDebt + currentUnfundedOtherDebt;
+  let perTenthPop = perSecondPop / 10;
+  elapsedSeconds = Math.ceil((today.getTime() - startPopdate.getTime()) / 1000);  //Seconds since start
+  elapsedTenths = Math.ceil((today.getTime() - startPopdate.getTime()) / 100);  //10ths of a second since start
+  let currentPop = Math.ceil((elapsedTenths * perTenthPop) + basePop);
+  let currentPersonDebt = currentDebt / currentPop;
+  let currentHouseholdDebt = (currentPersonDebt * 2.59);
+  let currentUnfundedPersonDebt = currentUnfundedDebt / currentPop;
+  let currentUnfHouseholdDebt = currentUnfundedPersonDebt * 2.59;
+  return currentDebt.formatMoney(2, '.', ',');
+}
+const DebtClock = () => {
+  const [state, setState] = useState(0)
+  useEffect(() => {
+    setInterval(() => {
+      setState(calculateDebt(2020, 7, 14, 26488101200376.64, 41693.92, 2011, 6, 6, 311496761, 0.076923076923077))
+    }, 100)
+  })
+  return (
+    <div>{`$${state}`}</div>
+  )
+}
 export default App;
+
+
